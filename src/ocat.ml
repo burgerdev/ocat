@@ -1,1 +1,2 @@
 include Monoid
+include Monad
