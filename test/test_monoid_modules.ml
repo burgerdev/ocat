@@ -1,8 +1,8 @@
 open OUnit
 open Fmt
 
-open Monoid
-open Ocat_modules
+open Ocat
+open Ocat.Ocat_modules
 
 
 module type Test = sig

@@ -1,6 +1,8 @@
-open Ocat
+
 
 (** Monoids *)
+
+open Monoid
 
 module Int = Monoid(struct
     type t = int
@@ -24,6 +26,8 @@ module Float = Monoid(struct
   end)
 
 (** Monads *)
+
+open Monad
 
 module Id = Monad (
   struct

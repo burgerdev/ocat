@@ -15,6 +15,9 @@ _build/
 *.byte
 *.native
 
+**/.merlin
+*.install
+
 # editors
 .DS_Store
 *.swp

@@ -1,10 +1,9 @@
 open OUnit
 open Fmt
 
-open Monad
-open Ocat_modules
+open Ocat
+open Ocat.Ocat_modules
 
-(* TODO below code is copypasta from monoid tests *)
 module type Test = sig
   module M: Monad
 

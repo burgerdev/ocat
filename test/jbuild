@@ -1,0 +1,22 @@
+(jbuild_version 1)
+
+(executables
+ ((names (test_monoid_modules test_monad_modules))
+  (libraries (ocat ounit fmt))))
+
+(alias
+ ((name monad)
+  (deps    (test_monad_modules.exe))
+  (action (run ${<})))
+)
+
+(alias
+ ((name monoid)
+  (deps    (test_monoid_modules.exe))
+  (action (run ${<})))
+)
+
+(alias
+ ((name    runtest)
+  (deps    ((alias monad) (alias monoid))))
+)
