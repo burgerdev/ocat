@@ -1,5 +1,4 @@
 
-
 (** Monoids *)
 
 open Monoid
@@ -33,14 +32,14 @@ module Id = Monad (
   struct
     type 'a t = 'a
     let return x = x
-    let bind x f = f x
+    let bind f x = f x
   end)
 
 module Option = Monad (
   struct
     type 'a t = 'a option
     let return x = Some x
-    let bind x f = match x with Some v -> f v | None -> None
+    let bind f x = match x with Some v -> f v | None -> None
   end)
 
 module List = struct
@@ -48,7 +47,7 @@ module List = struct
     struct
       type 'a t = 'a list
       let return x = [x]
-      let bind x f = List.(map f x|> flatten)
+      let bind f x = List.(map f x|> flatten)
     end)
   include List
 end
