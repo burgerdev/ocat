@@ -1,7 +1,7 @@
 (jbuild_version 1)
 
 (executables
- ((names (test_monoid_modules test_monad_modules))
+ ((names (test_monoid_modules test_monad_modules test_monad_transformers))
   (libraries (ocat ounit fmt))))
 
 (alias
@@ -17,6 +17,12 @@
 )
 
 (alias
+ ((name monadt)
+  (deps    (test_monad_transformers.exe))
+  (action (run ${<})))
+)
+
+(alias
  ((name    runtest)
-  (deps    ((alias monad) (alias monoid))))
+  (deps    ((alias monad) (alias monoid) (alias monadt))))
 )
