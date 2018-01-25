@@ -1,3 +1,4 @@
+include Functor
 include Monoid
 include Monad
 

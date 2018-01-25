@@ -1,0 +1,11 @@
+(jbuild_version 1)
+
+(executables
+ ((names (functor_example))
+  (libraries (ocat fmt))))
+
+(alias
+ ((name    examples)
+  (deps    (functor_example.exe))
+ )
+)
