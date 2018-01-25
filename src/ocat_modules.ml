@@ -64,3 +64,7 @@ module List = struct
     end)
   include List
 end
+
+open Arrow
+
+module Function = Kleisli (Id)
