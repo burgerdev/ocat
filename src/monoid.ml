@@ -9,7 +9,7 @@ module type Semigroup = sig
   val (|+|): t -> t -> t
 end
 
-module Semigroup (S: Semigroup_base): Semigroup with type t = S.t = struct
+module Semigroup (S: Semigroup_base): Semigroup with type t := S.t = struct
   include S
 
   let (|+|) t1 t2 = sum t1 t2
@@ -27,7 +27,7 @@ module type Monoid = sig
   include Semigroup with type t := t
 end
 
-module Monoid (M: Monoid_base): Monoid with type t = M.t = struct
+module Monoid (M: Monoid_base): Monoid with type t := M.t = struct
   include M
   module S: Semigroup with type t := M.t = Semigroup(M)
   include S
