@@ -8,10 +8,14 @@ end
 module type Functor = sig
   include Functor_base
 
+  val foreach: ('a -> unit) -> 'a t -> unit
+
   type 'a fix = Fix of ('a fix) t
 
   val fix: 'a fix t -> 'a fix
   val unfix: 'a fix -> 'a fix t
+
+  val fixed_map: ('a -> 'b) -> 'a fix -> 'b fix
 
   val cata: ('a t -> 'a) -> 'a fix -> 'a
 
@@ -23,10 +27,15 @@ end
 module Functor (F: Functor_base): Functor with type 'a t := 'a F.t = struct
   include F
 
+  let foreach f a = map f a |> ignore
+
   type 'a fix = Fix of ('a fix) t
 
   let fix x = Fix x
   let unfix = function Fix x -> x
+
+  let rec fixed_map f a_fix =
+    unfix a_fix |> map @@ fixed_map f |> fix
 
   let rec cata: ('a t -> 'a) -> 'a fix -> 'a = fun alg -> fun fix_x ->
     unfix fix_x
