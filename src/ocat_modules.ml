@@ -65,6 +65,16 @@ module List = struct
   include List
 end
 
+module Lazy = struct
+  include Lazy
+  include Monad (
+    struct
+      type 'a t = 'a Lazy.t
+      let return x = Lazy.from_val x
+      let bind f x = lazy (Lazy.force x |> f |> Lazy.force)
+    end)
+end
+
 open Arrow
 
 module Function = Kleisli (Id)
