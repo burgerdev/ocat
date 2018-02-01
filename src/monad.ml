@@ -12,7 +12,6 @@ module type Monad = sig
   include Functor with type 'a t := 'a t
 
   val join: 'a t t -> 'a t
-  val map: ('a -> 'b) -> 'a t -> 'b t
   val ap: ('a -> 'b) t -> 'a t -> 'b t
   val (>>=): 'a t -> ('a -> 'b t) -> 'b t
 
