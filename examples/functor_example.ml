@@ -82,6 +82,7 @@ module Expr_example = struct
   end
 
   include Functor (Expr)
+  include Fix (Expr)
 
   (* Below methods are convenience type constructors which handle the [Fix]
      part for us.

@@ -1,4 +1,5 @@
 include Functor
+include Fix
 include Monoid
 include Monad
 include Comonad
