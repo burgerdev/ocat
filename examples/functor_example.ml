@@ -147,30 +147,13 @@ module Expr_example = struct
     let s' = expand_string v in
     Fmt.pr "%s = %d = %s\n" s v s'
 
-  (* If you made it to this point, it's time for some weird stuff. Let's try to
-     split [expand_string] into its constituents.
-  *)
-
   (* This functions expands an [int] to an equivalent arithmetical expression.
-     Note that the type argument to [fix] is indeed fixed, where it was free in
-     earlier examples, where we defined the [expr] object directly. *)
-  let expand: int -> int fix = fun n -> ana expand_coalg n
-
-  (* Reminder: we defined this function above. *)
-  let string_of_expr: string fix -> string = fun e -> cata string_alg e
-
-  (* It should be fairly obvious that those two functions do not compose. The
-     trick is that the so-called 'carrier type' is only virtual in our case, and
-     we can force the compiler to convert between carrier types.
+     Note that the type argument in the result is free, so we can feed it to
+     another function with an unrelated carrier type.
   *)
-  let expand_string' n =
-    let e = expand n in
-    let rec swap_carrier f x =
-      unfix x
-      |> map @@ swap_carrier f
-      |> fix in
-    let e' = swap_carrier string_of_int e in
-    string_of_expr e'
+  let expand: int -> 'a fix = fun n -> ana expand_coalg n
+
+  let expand_string' n = expand n |> string_of_expr
 
   let _ =
     let n = 420 in
