@@ -18,14 +18,14 @@ module type Fix = sig
   val fixed_map: ('a -> 'b) -> 'a fix -> 'b fix
 
   val cata: 'a algebra -> 'a fix -> 'a
+  val para: (('a fix * 'a) t -> 'a) -> 'a fix -> 'a
+  val histo: ('a C.t t -> 'a) -> 'a fix -> 'a
 
   val ana: 'a coalgebra -> 'a -> 'a fix
-
-  val para: (('a fix * 'a) t -> 'a) -> 'a fix -> 'a
+  (* TODO apo *)
+  (* TODO futu *)
 
   val hylo: 'a coalgebra -> 'b algebra -> 'a -> 'b
-
-  val histo: ('a C.t t -> 'a) -> 'a fix -> 'a
 
 end
 
@@ -58,15 +58,15 @@ module Fix (F: Functor_base): Fix with type 'a t := 'a F.t = struct
 
   let rec para p_alg a_fix =
     unfix a_fix
-    |> map (para p_alg)
-    |> map (fun a -> (a_fix, a))
+    |> map (fun a -> (a_fix, para p_alg a))
     |> p_alg
 
-  let rec histo: ('a C.t F.t -> 'a)  -> 'a fix -> 'a = fun c_alg a_fix ->
-    unfix a_fix
-    |> map (delegate c_alg)
-    |> c_alg
-  and delegate = fun c_alg a_fix ->
-    let tail = unfix a_fix |> map (delegate c_alg) in
-    Cofree (histo c_alg a_fix, tail)
+  let rec histo c_alg a_fix =
+    let rec aux a_fix =
+      unfix a_fix
+      |> map aux
+      |> fun x -> C.Cofree (c_alg x, lazy x)
+    in
+    aux a_fix |> C.extract
+
 end
