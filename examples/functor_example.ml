@@ -52,9 +52,11 @@ module Context_example = struct
     let log f = Fmt.pr "Writing timestamp %.0f to user table of '%a'.\n" f pp_user u in
     foreach log session
 
-  let _ = login u p
-          |> map Unix.gettimeofday
-          |> time_to_database
+  let _ =
+    Fmt.pr "Keeping track of a session using Functor:\n";
+    login u p
+    |> map Unix.gettimeofday
+    |> time_to_database
 end
 
 (*
@@ -138,6 +140,8 @@ module Expr_example = struct
      for demonstration - result is a string which we just have to print.
   *)
   let expand_string n = hylo expand_coalg string_alg n
+
+  let _ = Fmt.pr "Functors and algebras:\n"
 
   (* No demo without some console output. *)
   let _ =

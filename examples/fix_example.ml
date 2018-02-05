@@ -54,6 +54,7 @@ module Fix_example = struct
     | n -> naive_fib (n - 1) + naive_fib (n - 2)
 
   let _ =
+    Fmt.pr "Calculate fibonacci numbers with fixed-point recursion:\n";
     let i = 12 in
     let nat = nat_of_int i in
     let elaborate = fib nat in
