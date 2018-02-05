@@ -59,6 +59,14 @@ module Option = struct
       let return x = Some x
       let bind f x = match x with Some v -> f v | None -> None
     end)
+
+  let of_list = function
+    | h :: t -> Some h
+    | [] -> None
+
+  let default value = function
+    | Some x -> x
+    | None -> value
 end
 
 module List = struct
@@ -70,6 +78,10 @@ module List = struct
       let bind f x = List.(map f x|> flatten)
     end)
   include List
+
+  let of_option = function
+    | Some x -> [x]
+    | None -> []
 end
 
 module Lazy = struct
