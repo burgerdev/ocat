@@ -33,6 +33,7 @@ end
 (** Monads *)
 
 open Monad
+open Comonad
 
 module Id = struct
   type 'a t = 'a
@@ -41,6 +42,12 @@ module Id = struct
       type 'a t = 'a
       let return x = x
       let bind f x = f x
+    end)
+  include Comonad (
+    struct
+      type 'a t = 'a
+      let extract x = x
+      let extend f x = f x
     end)
 end
 
@@ -72,6 +79,12 @@ module Lazy = struct
       type 'a t = 'a Lazy.t
       let return x = Lazy.from_val x
       let bind f x = lazy (Lazy.force x |> f |> Lazy.force)
+    end)
+  include Comonad (
+    struct
+      type 'a t = 'a Lazy.t
+      let extract x = Lazy.force x
+      let extend f x = lazy (f x)
     end)
 end
 
