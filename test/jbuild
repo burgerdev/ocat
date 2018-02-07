@@ -2,7 +2,7 @@
 
 (executables
  ((names (test_monoid_modules test_monad_modules test_monad_transformers))
-  (libraries (ocat ounit fmt))))
+  (libraries (ocat oUnit fmt))))
 
 (alias
  ((name monad)
