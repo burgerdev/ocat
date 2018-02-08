@@ -1,4 +1,5 @@
 open Functor
+open Free
 open Cofree
 
 type ('a, 'b) either =
@@ -9,19 +10,20 @@ module type Fix = sig
   type 'a t
   type 'a fix = Fix of ('a fix) t
 
-  module C: Cofree with type 'a f := 'a t
+  module Cofree_F: Cofree with type 'a f := 'a t
+  module Free_F: Free with type 'a f := 'a t
 
   val fix: 'a fix t -> 'a fix
   val unfix: 'a fix -> 'a fix t
 
   val cata: ('a t -> 'a) -> 'b fix -> 'a
   val para: (('b fix * 'a) t -> 'a) -> 'b fix -> 'a
-  val histo: ('a C.t t -> 'a) -> 'b fix -> 'a
+  val histo: ('a Cofree_F.t t -> 'a) -> 'b fix -> 'a
   val zygo: ('b t -> 'b) -> (('b * 'a) t -> 'a) -> 'c fix -> 'a
 
   val ana: ('a -> 'a t) -> 'a -> 'b fix
   val apo: ('a -> ('b fix, 'a) either t) -> 'a -> 'b fix
-  (* TODO futu *)
+  val futu: ('a -> 'a Free_F.t t) -> 'a -> 'b fix
 
   val hylo: ('a -> 'a t) -> ('b t -> 'b) -> 'a -> 'b
 
@@ -30,7 +32,8 @@ end
 module Fix (F: Functor_base): Fix with type 'a t := 'a F.t = struct
   open F
 
-  module C = Cofree(F)
+  module Cofree_F = Cofree(F)
+  module Free_F = Free(F)
 
   type 'a fix = Fix of ('a fix) t
 
@@ -64,9 +67,16 @@ module Fix (F: Functor_base): Fix with type 'a t := 'a F.t = struct
     let rec aux a_fix =
       unfix a_fix
       |> map aux
-      |> fun x -> C.Cofree (c_alg x, lazy x)
+      |> fun x -> Cofree_F.Cofree (c_alg x, lazy x)
     in
-    aux a_fix |> C.extract
+    aux a_fix |> Cofree_F.extract
+
+  let rec futu f_coalg a =
+    let aux = function
+      | Free_F.Val a -> futu f_coalg a
+      | Free_F.Suspend a_f -> failwith ""
+    in
+    f_coalg a |> map aux |> fix
 
   let zygo alg pair_alg a_fix =
     let rec aux a_fix =
