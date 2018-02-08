@@ -72,9 +72,9 @@ module Fix (F: Functor_base): Fix with type 'a t := 'a F.t = struct
     aux a_fix |> Cofree_F.extract
 
   let rec futu f_coalg a =
-    let aux = function
+    let rec aux = function
       | Free_F.Val a -> futu f_coalg a
-      | Free_F.Suspend a_f -> failwith ""
+      | Free_F.Suspend a_f -> map aux a_f |> fix
     in
     f_coalg a |> map aux |> fix
 
