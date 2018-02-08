@@ -33,7 +33,7 @@ module Fix_example = struct
 
   let int_of_nat n = cata int_of_nat_alg n
 
-  let fib_alg: (int C.t t) -> int = function
+  let fib_alg: (int Cofree_F.t t) -> int = function
     | Zero ->
       Fmt.pr "Zero\n";
       1
