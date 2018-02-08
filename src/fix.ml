@@ -1,6 +1,9 @@
 open Functor
 open Cofree
 
+type ('a, 'b) either =
+  | Left of 'a
+  | Right of 'b
 
 module type Fix = sig
   type 'a t
@@ -17,7 +20,7 @@ module type Fix = sig
   val zygo: ('b t -> 'b) -> (('b * 'a) t -> 'a) -> 'c fix -> 'a
 
   val ana: ('a -> 'a t) -> 'a -> 'b fix
-  (* TODO apo *)
+  val apo: ('a -> ('b fix, 'a) either t) -> 'a -> 'b fix
   (* TODO futu *)
 
   val hylo: ('a -> 'a t) -> ('b t -> 'b) -> 'a -> 'b
@@ -49,6 +52,13 @@ module Fix (F: Functor_base): Fix with type 'a t := 'a F.t = struct
     unfix a_fix
     |> map (fun a -> (a_fix, para p_alg a))
     |> p_alg
+
+  let rec apo p_coalg a =
+    let aux = function
+      | Left a_fix -> a_fix
+      | Right a -> (apo p_coalg) a
+    in
+    p_coalg a |> map aux |> fix
 
   let histo c_alg a_fix =
     let rec aux a_fix =
