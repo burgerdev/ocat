@@ -18,6 +18,12 @@ jobs:
             export TERM=dumb
             eval `opam config env`
             make test
+      - run:
+          name: "Examples"
+          command: |
+            export TERM=dumb
+            eval `opam config env`
+            make examples
 workflows:
   version: 2
   build_and_deploy:
