@@ -3,7 +3,7 @@ open Fmt
 
 open Ocat
 open Ocat.Ocat_modules
-open Ocat.Ocat_transformers
+open Ocat.Experimental.Ocat_transformers
 
 module I64 = struct
   include Int64
