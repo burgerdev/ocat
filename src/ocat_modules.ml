@@ -98,6 +98,9 @@ module Lazy = struct
       let extract x = Lazy.force x
       let extend f x = lazy (f x)
     end)
+
+  let foreach f l =
+    Lazy.force l |> f
 end
 
 open Arrow

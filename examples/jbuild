@@ -1,11 +1,11 @@
 (jbuild_version 1)
 
 (executables
- ((names (functor_example monad_example monoid_example fix_example))
+ ((names (functor_example monad_example monoid_example fix_example cofree_example))
   (libraries (ocat fmt unix))))
 
 (alias
  ((name    examples)
-  (deps    (functor_example.exe monad_example.exe monoid_example.exe fix_example.exe))
+  (deps    (functor_example.exe monad_example.exe monoid_example.exe fix_example.exe cofree_example.exe))
  )
 )
