@@ -3,6 +3,10 @@ open Ocat
 (*
    A classical example for fixed-point recursion, see e.g.
    https://www.schoolofhaskell.com/user/bartosz/understanding-algebras
+
+   This example covers catamorphisms, anamorphisms and hylomorphisms, introduced
+   as bananas, lenses and envelopes - respectively - by Meijer et. al. in
+   https://archive.alvb.in/msc/11_infomtpt/papers/bananas-lenses_Meijer.pdf
 *)
 module Expr_example = struct
 
@@ -110,8 +114,14 @@ end
    histomporphism would be a good excercise, so here it is.
 
    http://blog.sumtypeofway.com/recursion-schemes-part-iv-time-is-of-the-essence/
+
+   This example covers the histomorphisms, introduced by Uustalu and Vene in
+   http://cs.ioc.ee/~tarmo/papers/inf99.pdf
 *)
 module Fix_example = struct
+  (* The Church numerals, a data type for representing natural numbers. Note
+     that this type is isomorphic to ['a Option.t], the type we used to create
+     an infinite stream of natural numbers in 'cofree_example.ml'. *)
   module Nat = struct
     type 'a t =
       | Zero
@@ -139,6 +149,8 @@ module Fix_example = struct
 
   let int_of_nat n = cata int_of_nat_alg n
 
+  (* The Fibonacci algebra uses print statements to convince us that it is
+     indeed efficient and reuses earlier results. *)
   let fib_alg: (int Cofree_F.t t) -> int = function
     | Zero ->
       Fmt.pr "Zero\n";
