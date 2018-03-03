@@ -103,6 +103,4 @@ module Lazy = struct
     Lazy.force l |> f
 end
 
-open Arrow
-
-module Function = Kleisli (Id)
+module Reader = Id.Kleisli
