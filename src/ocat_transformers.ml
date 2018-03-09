@@ -53,8 +53,7 @@ module type WriterT = sig
 
   include MonadT with type 'a t = ('a * log) m and module M := M
 
-  val init: 'a * log -> 'a t
-  val (^^): 'a -> log -> 'a t
+  val tell: log -> 'a t -> 'a t
   val written: 'a t -> log m
   val value: 'a t -> 'a m
 end
@@ -65,7 +64,6 @@ module WriterT (Log: Monoid_base) (M: Monad_base): WriterT with type 'a M.t := '
   type 'a m = 'a M.t
 
   module M = Monad (M)
-
 
   module N = struct
     type 'a t = ('a * log) m
@@ -81,40 +79,7 @@ module WriterT (Log: Monoid_base) (M: Monad_base): WriterT with type 'a M.t := '
 
   let lift: 'a m -> 'a t = fun m -> M.map (fun a -> (a, L.zero)) m
 
-  let init = M.return
-  let (^^) a log = M.return (a, log)
+  let tell log m = m |> M.map @@ function (a, log') -> (a, L.(log' |+| log))
   let written m = M.(map snd m)
   let value m = M.(map fst m)
-end
-
-
-module type ReaderT = sig
-  type ask
-  module M: Monad
-  type 'a m = 'a M.t
-
-  include MonadT with type 'a t = (ask -> 'a m) and module M := M
-
-  val ask: ask -> 'a t -> 'a m
-end
-
-module ReaderT (A: sig type ask end) (M: Monad_base): ReaderT with type 'a M.t := 'a M.t and type ask := A.ask = struct
-  type ask = A.ask
-  type 'a m = 'a M.t
-  module M = Monad (M)
-
-  module N = struct
-    type 'a t = ask -> 'a m
-
-    let bind f a_m = fun q -> M.(a_m q >>= fun ask -> f ask q)
-    let return: 'a -> 'a t = fun a -> fun _ -> M.return a
-  end
-
-  include N
-  include Monad(N)
-
-  let lift: 'a m -> 'a t = fun m -> fun _ -> m
-
-  let ask: ask -> 'a t -> 'a m = fun q f -> f q
-
 end
