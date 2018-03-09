@@ -49,16 +49,6 @@ module Int_test: Test = struct
   let cmp x y = x - y = 0
 end
 
-module Float_test: Test = struct
-  module M = Float
-
-  let random _ = Random.float 1.0 -. 0.5
-
-  let num_instances = 10000
-  let name = "test_float"
-  let cmp x y = abs_float (x -. y) < 1e15
-end
-
 module String_test: Test = struct
   module M = String
 
@@ -80,7 +70,6 @@ end
 let tests =
   [ (module Int_test: Test)
   ; (module String_test: Test)
-  ; (module Float_test: Test)
   ] |> List.map test_base
 
 let suite =

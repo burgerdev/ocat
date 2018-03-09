@@ -1,5 +1,3 @@
-open Monad
-
 module type Arrow_base = sig
   type ('a, 'b) t
 
@@ -8,8 +6,6 @@ module type Arrow_base = sig
   val id: ('a, 'a) t
 
   val compose: ('b, 'c) t -> ('a, 'b) t -> ('a, 'c) t
-
-  val lift: ('a -> 'b) -> ('a, 'b) t
 
   (* TODO better name *)
   val first: ('a, 'b) t -> ('c * 'a, 'c * 'b) t
@@ -59,33 +55,4 @@ module Arrow (A: Arrow_base): Arrow with type ('a, 'b) t := ('a, 'b) A.t = struc
 
   let zip f_ab f_ac = contramap (fun a -> (a, a)) (split f_ab f_ac)
   let observe f_ab eff_ac = map (zip f_ab eff_ac) fst
-end
-
-module type Kleisli = sig
-  type 'a m
-  module M: Monad with type 'a t := 'a m
-  include Arrow with type ('a, 'b) t = 'a -> 'b m
-end
-
-module Kleisli (M: Monad_base): Kleisli with type 'a m := 'a M.t = struct
-  type 'a m = 'a M.t
-
-  module M = Monad (M)
-
-  module A: Arrow_base with type ('a, 'b) t = 'a -> 'b m = struct
-    type ('a, 'b) t = 'a -> 'b m
-
-    let lift f_ab = fun x -> f_ab x |> M.return
-
-    let id = fun x -> M.return x
-
-    let dimap f_ab a_bc f_bc = fun x -> M.(return x |> map f_ab >>= a_bc |> map f_bc)
-
-    let compose a_bc a_ab = fun a -> M.(a_ab a >>= a_bc)
-
-    let first a_bc = fun (a, b) -> M.(a_bc b >>= (fun c -> return (a, c)))
-  end
-
-  include A
-  include Arrow (A)
 end

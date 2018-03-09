@@ -59,11 +59,20 @@ module List_test: Test = struct
     List.for_all (fun (x, y) -> x = y) (List.combine a b)
 end
 
+module Lazy_test: Test = struct
+  module M = Lazy
+
+  let name = "test_list"
+  let cmp a b =
+    Lazy.force a = Lazy.force b
+end
+
 
 let tests =
   [ (module Id_test: Test)
   ; (module Option_test: Test)
   ; (module List_test: Test)
+  ; (module Lazy_test: Test)
   ] |> List.map test_base
 
 let suite =

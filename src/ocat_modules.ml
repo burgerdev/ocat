@@ -21,15 +21,6 @@ module String = struct
   include String
 end
 
-module Float = struct
-  type t = float
-  include Monoid(struct
-      type t = float
-      let zero = 0.0
-      let sum = (+.)
-    end)
-end
-
 (** Monads *)
 
 open Monad
@@ -75,7 +66,7 @@ module List = struct
     struct
       type 'a t = 'a list
       let return x = [x]
-      let bind f x = List.(map f x|> flatten)
+      let bind f x = List.(map f x |> flatten)
     end)
   include List
 
@@ -103,6 +94,4 @@ module Lazy = struct
     Lazy.force l |> f
 end
 
-open Arrow
-
-module Function = Kleisli (Id)
+module Reader = Id.Kleisli
