@@ -47,7 +47,9 @@ jobs:
           command: |
               if [[ "${}" == "master" ]]; then version="master"; else version="$(git describe --abbrev=0 --tags)"; fi
               tar -cz -C _build/default/_doc/ . | \
-              curl -f -X PUT -H "Authorization: ${IO_BURGERDEV_DE_TOKEN}" \
+              curl -f -X PUT \
+                  -H "Authorization: ${IO_BURGERDEV_DE_TOKEN}" \
+                  -H "Content-Type: application/gzip" \
                   "https://io.burgerdev.de/docs/ocat/$version?extract" \
                   --data-binary @-
 
