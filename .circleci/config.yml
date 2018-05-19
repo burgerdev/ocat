@@ -31,6 +31,7 @@ jobs:
             eval `opam config env`
             make docs
   deploy:
+    context: io.burgerdev.de
     docker:
       - image: burgerdev/ocaml-addressmapper-devel:alpine
     working_directory: /tmp/oam
