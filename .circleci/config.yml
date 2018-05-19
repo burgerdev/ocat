@@ -46,7 +46,7 @@ jobs:
       - run:
           name: "Upload Docs"
           command: |
-			  if [[ "${}" == "master" ]]; then version="master"; else version="$(git describe --abbrev=0 --tags)"; fi
+              if [[ "${}" == "master" ]]; then version="master"; else version="$(git describe --abbrev=0 --tags)"; fi
               tar -cz -C _build/default/_doc/ . | \
               curl -f -X PUT -H "Authorization: ${IO_BURGERDEV_DE_TOKEN}" \
                   "https://io.burgerdev.de/docs/ocat/$version?extract" \
