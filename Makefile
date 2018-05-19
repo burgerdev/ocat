@@ -10,9 +10,12 @@ test:
 examples:
 	jbuilder build @examples
 
+docs:
+	jbuilder build @doc
+
 clean:
 	rm -rf .build
 	rm -f *.native
 	jbuilder clean
 
-.PHONY: build all test examples
+.PHONY: build all test examples docs clean
