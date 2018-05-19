@@ -24,8 +24,47 @@ jobs:
             export TERM=dumb
             eval `opam config env`
             make examples
+      - run:
+          name: "Docs"
+          command: |
+            export TERM=dumb
+            eval `opam config env`
+            make docs
+  deploy:
+    docker:
+      - image: burgerdev/ocaml-addressmapper-devel:alpine
+    working_directory: /tmp/oam
+    steps:
+      - checkout
+      - run:
+          name: "Generate Docs"
+          command: |
+            export TERM=dumb
+            eval `opam config env`
+            make docs
+      - run:
+          name: "Upload Docs"
+          command: |
+			  if [[ "${}" == "master" ]]; then version="master"; else version="$(git describe --abbrev=0 --tags)"; fi
+              tar -cz -C _build/default/_doc/ . | \
+              curl -f -X PUT -H "Authorization: ${IO_BURGERDEV_DE_TOKEN}" \
+                  "https://io.burgerdev.de/docs/ocat/$version?extract" \
+                  --data-binary @-
+
 workflows:
   version: 2
-  build_and_deploy:
+  build-and-deploy:
     jobs:
       - build
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only: /.*/
+      - deploy:
+          requires: ["build"]
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only: ["master"]
