@@ -27,6 +27,7 @@ module type Fix = sig
 
   val hylo: ('a -> 'a t) -> ('b t -> 'b) -> 'a -> 'b
 
+  val zip: ('a t -> 'a) -> ('b t -> 'b) -> ('a * 'b) t -> 'a * 'b
 end
 
 module Fix (F: Functor_base): Fix with type 'a t := 'a F.t = struct
@@ -80,13 +81,17 @@ module Fix (F: Functor_base): Fix with type 'a t := 'a F.t = struct
 
   let zygo alg pair_alg a_fix =
     let rec aux a_fix =
-      let f_a = unfix a_fix in
-      let mapped = map aux f_a in
+      let mapped = unfix a_fix |> map aux in
       let b = mapped |> map fst |> alg in
       let a = pair_alg mapped in
       (b, a)
     in
     aux a_fix
     |> snd
+
+  let zip a_alg b_alg = fun f_ab ->
+    let a = map fst f_ab |> a_alg in
+    let b = map snd f_ab |> b_alg in
+    (a, b)
 
 end
